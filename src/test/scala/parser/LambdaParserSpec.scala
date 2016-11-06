@@ -6,7 +6,7 @@ import org.scalatest._
 import scala.collection.mutable.ArrayBuffer
 
 class LambdaParserSpec extends FlatSpec with Matchers {
-  class TestCase(t: List[LambdaToken], e: Some[LambdaAST]) {
+  class TestCase(t: List[LambdaToken], e: Option[LambdaAST]) {
     def tokens = t
     def expected = e
   }
@@ -15,7 +15,7 @@ class LambdaParserSpec extends FlatSpec with Matchers {
   testCases += new TestCase(List(ID("x")), Some(Var("x")))
   testCases += new TestCase(List(LAMBDA, ID("x"), DOT, ID("x")), Some(Fun("x", Var("x"))))
 
-  "The Lexer" should "lex correctly" in {
+  "The Parser" should "parser correctly" in {
     for (testCase <- testCases) {
       LambdaParser(Some(testCase.tokens)) shouldBe testCase.expected
     }

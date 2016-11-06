@@ -5,7 +5,7 @@ import org.scalatest._
 import scala.collection.mutable.ArrayBuffer
 
 class LambdaLexerSpec extends FlatSpec with Matchers {
-  class TestCase(c: String, e: Some[List[LambdaToken]]) {
+  class TestCase(c: String, e: Option[List[LambdaToken]]) {
     def code = c
     def expected = e
   }
