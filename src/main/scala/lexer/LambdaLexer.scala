@@ -14,7 +14,7 @@ object LambdaLexer extends RegexParsers {
   val in     = "in"     ^^ { _ => IN     }
   val id     = new Regex("[a-zA-Z_$][a-zA-Z_$0-9]*") ^^ { id => ID(id) }
 
-  val expr = rep1(dot | lambda | open | close | id)
+  val expr = rep1(dot | lambda | open | close | let | equal | in | id)
   val program = phrase(expr)
 
   def apply(code: String) = {

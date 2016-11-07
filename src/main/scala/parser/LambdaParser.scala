@@ -32,8 +32,9 @@ object LambdaParser extends Parsers {
           FAppFlatList(fapplst.toList)
         }
       }
-      case Fun(a, b) => Fun(a, flattenFAppList(b))
-      case Var(a) => Var(a)
+      case Let(key, value, body) => Let(key, flattenFAppList(value), flattenFAppList(body))
+      case Fun(arg, body) => Fun(arg, flattenFAppList(body))
+      case Var(key) => Var(key)
     }
   }
 
@@ -42,8 +43,9 @@ object LambdaParser extends Parsers {
       case FAppFlatList(xs: List[LambdaAST]) => {
         xs.map(reduceFAppFlatList).reduce(FApp)
       }
-      case Fun(a, b) => Fun(a, reduceFAppFlatList(b))
-      case Var(a) => Var(a)
+      case Let(key, value, body) => Let(key, reduceFAppFlatList(value), reduceFAppFlatList(body))
+      case Fun(arg, body) => Fun(arg, reduceFAppFlatList(body))
+      case Var(key) => Var(key)
     }
   }
 
