@@ -28,11 +28,11 @@ class LambdaEvaluatorSpec extends FlatSpec with Matchers {
   testCases += new TestCase("""(((\x y z.y z) \a.a) \b.b) \c.c""", Some(Fun("c", Var("c"))))
 
 //  failures
-  testCases += new TestCase("""x""", None)
-  testCases += new TestCase("""p q""", None)
-  testCases += new TestCase("""p q r""", None)
-  testCases += new TestCase("""p q r s""", None)
-  testCases += new TestCase("""x y \x.x""", None)
+  testCases += new TestCase("""x""", Some(Var("x")))
+  testCases += new TestCase("""p q""", Some(FApp(Var("p"), Var("q"))))
+  testCases += new TestCase("""p q r""", Some(FApp(FApp(Var("p"), Var("q")), Var("r"))))
+  testCases += new TestCase("""p q r s""", Some(FApp(FApp(FApp(Var("p"), Var("q")), Var("r")), Var("s"))))
+  testCases += new TestCase("""x y \x.x""", Some(FApp(FApp(Var("x"), Var("y")), Fun("x", Var("x")))))
 
 //  non-terminating
 //  testCases += new TestCase("""(\x.(x x)) (\x.(x x))""", Some(FApp(Fun("x", FApp(Var("x"), Var("x"))), Fun("x", FApp(Var("x"), Var("x")))))) // Infinite Loop!
