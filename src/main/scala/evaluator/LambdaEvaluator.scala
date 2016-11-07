@@ -1,7 +1,5 @@
 import parser._
 
-import scala.util.Try
-
 object LambdaEvaluator {
   def substitute(ast: LambdaAST, key: String, value: LambdaAST): LambdaAST = {
     ast match {
@@ -23,14 +21,19 @@ object LambdaEvaluator {
 
   def eval(ast: LambdaAST): LambdaAST = {
     ast match {
-      case Fun(_, _) => ast
       case FApp(f, v) => {
-        f match {
-          case Fun(arg, body) => eval(substitute(body, arg, eval(v)))
-          case _ => eval(FApp(eval(f), v))
+        val ef = eval(f)
+        val ev = eval(v)
+        ef match {
+          case Fun(arg, body) => eval(substitute(body, arg, ev))
+          case _ => FApp(ef, ev)
         }
       }
-      case Var(x) => throw new Exception("Undefined variable: " + x)
+      case Let(key, value, body) => {
+        eval(FApp(Fun(key, body), value))
+      }
+      case Var(_) => ast
+      case Fun(_, _) => ast
       case _ => throw new Exception("Invalid expression.")
     }
   }
@@ -41,5 +44,9 @@ object LambdaEvaluator {
     } catch {
       case _ => None
     }
+  }
+
+  def main(args: Array[String]) {
+    println(apply("""x y z"""))
   }
 }

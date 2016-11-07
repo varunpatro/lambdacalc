@@ -23,24 +23,5 @@ object LambdaLexer extends RegexParsers {
       case Success(result, next) => Some(result)
     }
   }
-
-  def main(args: Array[String]) {
-    val codes = Array(
-      """x""",
-      """(x)""",
-      """\x. x""",
-      """\y. x""",
-      """\x y. x""",
-      """x y""",
-      """\x. x""",
-      "x"
-    )
-    for (code <- codes) {
-      println(code)
-      val tokens = LambdaLexer(code)
-      println(tokens.toString)
-
-    }
-  }
 }
 
