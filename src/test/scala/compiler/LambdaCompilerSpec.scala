@@ -1,3 +1,5 @@
+package compiler
+
 import org.scalatest.{FlatSpec, Matchers}
 import parser._
 

@@ -1,4 +1,7 @@
+package evaluator
+
 import parser._
+import compiler._
 
 object LambdaEvaluator {
   def substitute(ast: LambdaAST, key: String, value: LambdaAST): LambdaAST = {
@@ -44,9 +47,5 @@ object LambdaEvaluator {
     } catch {
       case _ => None
     }
-  }
-
-  def main(args: Array[String]) {
-    println(apply("""x y z"""))
   }
 }

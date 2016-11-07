@@ -1,3 +1,5 @@
+package compiler
+
 import lexer.LambdaLexer
 import parser.{LambdaAST, LambdaParser}
 
