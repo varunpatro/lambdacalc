@@ -13,9 +13,7 @@ object LambdaParser extends Parsers {
   }
 
   def expr: Parser[LambdaAST] = {
-    rep1(simpleExpr) ^^ {
-      case xs => xs.reduce(FApp)
-    }
+    rep1(simpleExpr) ^^ { _.reduce(FApp) }
   }
 
   def simpleExpr: Parser[LambdaAST] = {
@@ -23,7 +21,7 @@ object LambdaParser extends Parsers {
   }
 
   def ident: Parser[Var] = {
-    accept("ident", {case ID(id) => Var(id)})
+    accept("ident", { case ID(id) => Var(id) })
   }
 
   def parenExpr: Parser[LambdaAST] = {
@@ -31,8 +29,8 @@ object LambdaParser extends Parsers {
   }
 
   def let: Parser[Let] = {
-    LET ~ ident ~ EQUAL ~ expr ~ IN ~ expr ^^ {
-      case _ ~ n ~ _ ~ f ~ _ ~ v => Let(n.toString, f, v)
+    (LET ~> ident) ~ (EQUAL ~> expr) ~ (IN ~> expr) ^^ {
+      case n ~ f ~ v => Let(n.toString, f, v)
     }
   }
 
