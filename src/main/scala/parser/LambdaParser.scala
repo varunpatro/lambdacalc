@@ -2,7 +2,6 @@ package parser
 
 import lexer._
 
-import scala.collection.mutable.ListBuffer
 import scala.util.parsing.combinator.Parsers
 
 object LambdaParser extends Parsers {
@@ -34,10 +33,8 @@ object LambdaParser extends Parsers {
     }
   }
 
-  def fun: Parser[Fun] = {
-    val p1 = ident ~ DOT ~ expr ^^ {case arg ~ _ ~ body => Fun(arg.toString, body)}
-    val p2 = ident ~ fun ^^ {case arg ~ body => Fun(arg.toString, body)}
-    p1 | p2
+  def fun: Parser[LambdaAST] = {
+    (rep1(ident) <~ DOT) ~ expr ^^ { case args ~ body => args.foldRight(body)((arg, body) => Fun(arg.toString, body)) }
   }
 
   def apply(tokensOption: Option[Seq[LambdaToken]]): Option[LambdaAST] = {
