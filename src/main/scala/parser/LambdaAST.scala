@@ -13,6 +13,3 @@ case class FApp(f: LambdaAST, v: LambdaAST) extends LambdaAST {
 case class Let(n: String,t1: LambdaAST, t2: LambdaAST) extends LambdaAST {
   override def toString = "(let " ++ n.toString ++ "=" ++ t1.toString ++ " in " ++ t2.toString ++ ")"
 }
-private case class FAppList(f: List[LambdaAST]) extends LambdaAST {
-  override def toString = "[" + (f mkString ",") + "]"
-}
