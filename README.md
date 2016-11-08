@@ -14,7 +14,7 @@ This project is divided into 5 components:
 
 Given a string, the `LambdaLexer` class generates a list of tokens of type `LambdaToken` that the `LambdaParser` uses to construct an abstract syntax tree of type `LambdaAST`.
 
-There are nine distinct tokens that the lexer recognizes:
+There are eight distinct tokens that the lexer recognizes:
 
 1. DOT
 
