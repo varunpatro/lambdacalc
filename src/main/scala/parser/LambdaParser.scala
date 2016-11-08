@@ -9,42 +9,16 @@ object LambdaParser extends Parsers {
   type Elem = LambdaToken
 
   def program: Parser[LambdaAST] = {
-    phrase(expr ^^ flattenFAppList ^^ reduceFAppFlatList)
+    phrase(expr ^^ reduceFAppList)
   }
 
-  def flattenFAppList(ast: LambdaAST): LambdaAST = {
+  def reduceFAppList(ast: LambdaAST): LambdaAST = {
     ast match {
       case FAppList(xs: List[LambdaAST]) => {
-        if (xs.size == 2) {
-          val f = flattenFAppList(xs(0))
-          val v = flattenFAppList(xs(1))
-          FAppFlatList(List(f, v))
-        } else {
-          var fapplst = ListBuffer[LambdaAST]()
-          val f1 = flattenFAppList(xs(0))
-          val f2 = flattenFAppList(xs(1))
-          val f3 = flattenFAppList(xs(2))
-          fapplst.append(f1, f2)
-          f3 match {
-            case FAppFlatList(ys) => fapplst.appendAll(ys)
-            case _ => fapplst.append(f3)
-          }
-          FAppFlatList(fapplst.toList)
-        }
+        xs.map(reduceFAppList).reduce(FApp)
       }
-      case Let(key, value, body) => Let(key, flattenFAppList(value), flattenFAppList(body))
-      case Fun(arg, body) => Fun(arg, flattenFAppList(body))
-      case Var(key) => Var(key)
-    }
-  }
-
-  def reduceFAppFlatList(ast: LambdaAST): LambdaAST = {
-    ast match {
-      case FAppFlatList(xs: List[LambdaAST]) => {
-        xs.map(reduceFAppFlatList).reduce(FApp)
-      }
-      case Let(key, value, body) => Let(key, reduceFAppFlatList(value), reduceFAppFlatList(body))
-      case Fun(arg, body) => Fun(arg, reduceFAppFlatList(body))
+      case Let(key, value, body) => Let(key, reduceFAppList(value), reduceFAppList(body))
+      case Fun(arg, body) => Fun(arg, reduceFAppList(body))
       case Var(key) => Var(key)
     }
   }
@@ -58,7 +32,17 @@ object LambdaParser extends Parsers {
   }
 
   def atLeast2expr: Parser[LambdaAST] = {
-    val p1 = term ~ term ~ expr ^^ { case a ~ b ~ c => FAppList(List(a, b, c)) }
+    val p1 = term ~ term ~ expr ^^ { case a ~ b ~ c => {
+      c match {
+        case FAppList(xs) => FAppList({
+          val x = List(a, b)
+          val y = x ++ xs
+          y
+        })
+        case _ => FAppList(List(a, b, c))
+      }
+    }
+    }
     val p2 = term ~ term ^^ { case a ~ b => FAppList(List(a, b)) }
     p1 | p2
   }
